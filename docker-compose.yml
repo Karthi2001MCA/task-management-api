@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: taskapi-db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -17,7 +16,6 @@ services:
 
   api:
     build: .
-    container_name: taskapi-app
     ports:
       - "8000:8000"
     environment:
