@@ -1,0 +1,17 @@
+# Virtual environment
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Secrets — never commit real credentials
+.env
+
+# Test & lint caches
+.pytest_cache/
+.ruff_cache/
+
+# Editors
+.vscode/
+.idea/
