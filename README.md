@@ -18,7 +18,8 @@ the whole stack runs with a single command.
 | Validation | Pydantic v2 |
 | ORM | SQLAlchemy 2.0 |
 | Database | PostgreSQL 16 |
-| Tests | pytest (59 tests) |
+| Web UI | Vanilla HTML, CSS and JavaScript — no build step |
+| Tests | pytest (62 tests) |
 | Linting | Ruff |
 | Packaging | Docker, Docker Compose |
 | CI/CD | GitHub Actions → GitHub Container Registry |
@@ -65,9 +66,13 @@ task-management-api/
 │   ├── crud.py            Database operations
 │   └── routers/
 │       └── tasks.py       The five task endpoints
+├── static/
+│   ├── index.html         Browser UI
+│   ├── style.css
+│   └── app.js             Calls the same REST endpoints
 ├── tests/
 │   ├── conftest.py        Fixtures: isolated test database, test client
-│   └── test_tasks.py      59 tests
+│   └── test_tasks.py      62 tests
 ├── .github/workflows/
 │   └── ci.yml             Lint, test, build, publish
 ├── Dockerfile
@@ -103,8 +108,13 @@ docker compose up
 
 Then open:
 
+- **http://localhost:8000** — the web UI
 - **http://localhost:8000/docs** — interactive API documentation
 - **http://localhost:8000/health** — health check
+
+> Browse to `localhost`, not `0.0.0.0`. Uvicorn logs `Uvicorn running on http://0.0.0.0:8000`,
+> but `0.0.0.0` is a *bind* address meaning "listen on every interface" — it is not a
+> destination you can open in a browser.
 
 To stop:
 
@@ -122,6 +132,27 @@ docker pull ghcr.io/karthi2001mca/task-management-api:latest
 ```
 
 Tagged `latest` and with the commit SHA, so any build is traceable to its source.
+
+---
+
+## Web UI
+
+A single page served by the application itself at **http://localhost:8000**.
+
+- Create tasks with title, description, status and priority
+- Colour-coded status and priority badges; completed tasks are struck through
+- Change a task's status inline — each change issues a `PUT`
+- Delete with confirmation
+- Filter by status
+- Light and dark themes, following the operating system preference
+
+It is plain HTML, CSS and JavaScript with no framework and no build step, served by
+FastAPI from `/static`. It consumes exactly the same public endpoints any other client
+would, so no API code exists solely to support it.
+
+Validation failures are surfaced in the page rather than hidden: submitting a
+two-character title shows `title: String should have at least 3 characters`, parsed
+from the API's `422` response body.
 
 ---
 
@@ -256,7 +287,7 @@ Requires a running PostgreSQL instance and a `taskdb_test` database:
 docker exec -it taskdb psql -U taskuser -d taskdb -c "CREATE DATABASE taskdb_test;"
 ```
 
-**59 tests** covering every endpoint, both success and failure paths, all valid and
+**62 tests** covering every endpoint, both success and failure paths, all valid and
 invalid enum values, missing and malformed fields, and `404` handling across all three
 verbs that can produce one.
 
