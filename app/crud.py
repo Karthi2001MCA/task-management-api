@@ -1,7 +1,9 @@
+from sqlalchemy import select
 from sqlalchemy.orm import Session
+
 from app.models import Task
 from app.schemas import TaskCreate, TaskUpdate
-from sqlalchemy import select
+
 
 def create_task(db:Session,task_in: TaskCreate) -> Task:
     task = Task(**task_in.model_dump())
@@ -24,7 +26,6 @@ def update_task(db: Session, task: Task, task_in: TaskUpdate) -> Task:
     db.refresh(task)
     return task
 
-def delete_task(_db: Session,task: Task) -> Task:
-    _db.delete(task)
-    _db.commit()
-    return task
+def delete_task(db: Session, task: Task) -> None:
+    db.delete(task)
+    db.commit()
