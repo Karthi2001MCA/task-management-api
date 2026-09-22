@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Manager</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✓</text></svg>">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="wrap header-inner">
+      <h1>Task Manager</h1>
+      <a class="docs-link" href="/docs" target="_blank" rel="noopener">API docs →</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="panel" aria-labelledby="new-task-heading">
+      <h2 id="new-task-heading">New task</h2>
+      <form id="create-form" novalidate>
+        <div class="field">
+          <label for="title">Title</label>
+          <input id="title" name="title" type="text" placeholder="What needs doing?" autocomplete="off">
+        </div>
+
+        <div class="field">
+          <label for="description">Description <span class="optional">optional</span></label>
+          <textarea id="description" name="description" rows="2" placeholder="Any extra detail"></textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="status">Status</label>
+            <select id="status" name="status">
+              <option value="todo">To do</option>
+              <option value="in_progress">In progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" type="submit">Add task</button>
+        </div>
+
+        <div id="form-error" class="error" hidden></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="tasks-heading">
+      <div class="panel-head">
+        <h2 id="tasks-heading">Tasks <span id="count" class="count"></span></h2>
+        <div class="filters" role="group" aria-label="Filter by status">
+          <button class="chip is-active" data-filter="all">All</button>
+          <button class="chip" data-filter="todo">To do</button>
+          <button class="chip" data-filter="in_progress">In progress</button>
+          <button class="chip" data-filter="completed">Completed</button>
+        </div>
+      </div>
+
+      <ul id="task-list" class="task-list"></ul>
+      <p id="empty" class="empty" hidden>No tasks yet. Add one above.</p>
+      <div id="list-error" class="error" hidden></div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <template id="task-template">
+    <li class="task">
+      <div class="task-main">
+        <p class="task-title"></p>
+        <p class="task-desc"></p>
+        <div class="task-meta">
+          <span class="badge badge-status"></span>
+          <span class="badge badge-priority"></span>
+          <span class="task-date"></span>
+        </div>
+      </div>
+      <div class="task-actions">
+        <select class="status-select" aria-label="Change status">
+          <option value="todo">To do</option>
+          <option value="in_progress">In progress</option>
+          <option value="completed">Completed</option>
+        </select>
+        <button class="btn btn-ghost btn-delete" type="button">Delete</button>
+      </div>
+    </li>
+  </template>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

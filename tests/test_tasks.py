@@ -278,3 +278,22 @@ def test_missing_task_returns_404_for_every_verb(client, method, kwargs):
 def test_database_starts_empty(client):
     # Proves fixtures drop tables between tests: passes regardless of run order.
     assert client.get("/tasks").json() == []
+
+
+# ------------------------------------------------------------- web UI
+
+
+def test_index_serves_the_ui(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "text/html" in response.headers["content-type"]
+
+
+def test_static_assets_are_served(client):
+    assert client.get("/static/app.js").status_code == 200
+    assert client.get("/static/style.css").status_code == 200
+
+
+def test_ui_route_is_hidden_from_the_api_schema(client):
+    paths = client.get("/openapi.json").json()["paths"]
+    assert "/" not in paths
